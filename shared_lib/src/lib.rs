@@ -1,23 +1,18 @@
+uniffi::setup_scaffolding!();
 
 mod fs;
 mod sqlite;
 
-use reqwest;
-
-pub fn init_sqlite(db_path: &str) -> String {
+#[uniffi::export]
+pub fn init_sqlite(db_path: String) -> String {
     sqlite::init_db(&db_path).unwrap();
     String::from(db_path)
 }
 
-pub fn insert_record(db_path: &str, file_path: &str, parent_path: &str) {
-    print!("{} {} {}", db_path, file_path, parent_path);
-    let conn = sqlite::read_db(db_path).unwrap();
-    sqlite::insert(&conn, file_path, parent_path)
-}
-
-pub fn walk_and_insert(db_path: &str, dir: &str) -> String {
-    let conn = sqlite::init_db(db_path).unwrap();
-    let entries = fs::walk_dir(dir, "").unwrap();
+#[uniffi::export]
+pub fn walk_and_insert(db_path: String, dir: String) -> String {
+    let conn = sqlite::init_db(&db_path).unwrap();
+    let entries = fs::walk_dir(&dir, "").unwrap();
     for entry in entries {
         sqlite::insert(
             &conn,
@@ -27,31 +22,14 @@ pub fn walk_and_insert(db_path: &str, dir: &str) -> String {
     }
     String::from("inserted")
 }
-#[uniffi::export(async_runtime = "tokio")]
-pub async fn fetch_url(url: String) -> String {
-    let client = reqwest::Client::new();
-    let resp = client
-        .get(url)
-        .header("Content-Type", "application/json")
-        .send()
-        .await;
-    if resp.is_err() {
-        String::from("Fetch failed")
-    } else {
-        let body = resp.unwrap().text().await;
-        body.unwrap()
-    }
+
+#[uniffi::export]
+pub fn fetch_url(url: String) -> String {
+    let body: String = ureq::get(&url)
+        .set("Content-Type", "json/application")
+        .call()
+        .unwrap()
+        .into_string()
+        .unwrap();
+    body
 }
-
-#[test]
-fn test() {
-    assert!(init_sqlite("/Users/jz/Inbox/test.db") == "/Users/jz/Inbox/test.db");
-    insert_record("/Users/jz/Inbox/test.db", "sample.txt", "/Users/jz/Inbox/");
-}
-
-// #[test]
-// fn test() {
-//     walk_and_insert("./test_data/test.db", "./test_data/folder");
-// }
-
-uniffi::include_scaffolding!("lib");

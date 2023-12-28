@@ -21,7 +21,6 @@ struct ContentView: View {
           Text("网络请求")
         }
       
-      // 可以添加更多选项卡...
     }
     .navigationTitle("TabView Example")
   }

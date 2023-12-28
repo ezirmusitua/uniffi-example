@@ -1,5 +1,0 @@
-namespace shared_lib {
-    string init_sqlite([ByRef] string db_path);
-    void insert_record([ByRef] string db_path, [ByRef] string file, [ByRef] string parent);
-    string walk_and_insert([ByRef] string db_path, [ByRef] string root);
-};

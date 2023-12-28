@@ -1,5 +1,5 @@
 bindings:
-	cd shared_lib && cargo run --bin uniffi-bindgen
+	bash ./scripts/generate-bindings.sh
 
 clean:
 	rm -rf shared_lib/bindings && rm -rf shared_lib/target

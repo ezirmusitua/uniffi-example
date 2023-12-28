@@ -1,29 +1,20 @@
-ENV=${1:-"release"}
-
-HEADER_DIR="shared_lib/bindings"
-LIB_NAME="shared_lib"
-NEW_HEADER_DIR="shared_lib/bindings/include"
-OUTDIR="app/uniffi-example"
-RELDIR="release"
-STATIC_LIB_NAME="lib${LIB_NAME}.a"
-TARGETDIR="shared_lib/target"
-
 make bindings
-make lib
 
-mkdir -p "${NEW_HEADER_DIR}"
-cp "${HEADER_DIR}/shared_libFFI.h" "${NEW_HEADER_DIR}/"
-cp "${HEADER_DIR}/shared_libFFI.modulemap" "${NEW_HEADER_DIR}/module.modulemap"
+DEST="../app/uniffi-example/shared_lib_framework.xcframework"
+ENV="release"
+HEADER_DIR="out"
+STATIC_LIB_NAME="libshared_lib.a"
+TARGET_DIR="target"
 
-rm -rf "${OUTDIR}/${NAME}_framework.xcframework"
+cd shared_lib
 
-rm -rf "${OUTDIR}/${LIB_NAME}_framework.xcframework"
+rm -rf $DEST
 
 xcodebuild -create-xcframework \
-  -library "${TARGETDIR}/aarch64-apple-darwin/${ENV}/${STATIC_LIB_NAME}" \
-  -headers "${NEW_HEADER_DIR}" \
-  -library "${TARGETDIR}/aarch64-apple-ios/${ENV}/${STATIC_LIB_NAME}" \
-  -headers "${NEW_HEADER_DIR}" \
-  -library "${TARGETDIR}/aarch64-apple-ios-sim/${ENV}/${STATIC_LIB_NAME}" \
-  -headers "${NEW_HEADER_DIR}" \
-  -output "${OUTDIR}/${LIB_NAME}_framework.xcframework"
+  -library "${TARGET_DIR}/aarch64-apple-darwin/${ENV}/${STATIC_LIB_NAME}" \
+  -headers "${HEADER_DIR}/aarch64-apple-darwin" \
+  -library "${TARGET_DIR}/aarch64-apple-ios/${ENV}/${STATIC_LIB_NAME}" \
+  -headers "${HEADER_DIR}/aarch64-apple-ios" \
+  -library "${TARGET_DIR}/aarch64-apple-ios-sim/${ENV}/${STATIC_LIB_NAME}" \
+  -headers "${HEADER_DIR}/aarch64-apple-ios-sim" \
+  -output  $DEST

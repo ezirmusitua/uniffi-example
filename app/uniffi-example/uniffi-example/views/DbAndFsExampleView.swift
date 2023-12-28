@@ -14,6 +14,7 @@ struct DbAndFsExampleView: View {
   @State private var dbPath: String = "未选择"
   @State private var scanPath: String = "未选择"
   @State private var keyword: String = ""
+
   struct ListItem: Identifiable {
     var id = UUID()
     var title: String
@@ -57,7 +58,7 @@ struct DbAndFsExampleView: View {
           folderPicker.$selectedPath.sink { path in
             if path.first != nil {
               scanPath = path.first ?? "未选择"
-              let result = walkAndInsert(dbPath: dbPath, root: scanPath)
+              let result = walkAndInsert(dbPath: dbPath, dir: scanPath)
               print(result)
             }
           }.store(in: &self.cancellables)
