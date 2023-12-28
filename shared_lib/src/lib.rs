@@ -10,15 +10,16 @@ pub fn init_sqlite(db_path: String) -> String {
 }
 
 #[uniffi::export]
+pub fn search_sqlite(db_path: String, keyword: String) -> Vec<fs::FileEntry> {
+    sqlite::search(&db_path, &keyword)
+}
+
+#[uniffi::export]
 pub fn walk_and_insert(db_path: String, dir: String) -> String {
     let conn = sqlite::init_db(&db_path).unwrap();
     let entries = fs::walk_dir(&dir, "").unwrap();
     for entry in entries {
-        sqlite::insert(
-            &conn,
-            &entry.path.to_string_lossy(),
-            &entry.parent_path.to_string_lossy(),
-        );
+        sqlite::insert(&conn, &entry);
     }
     String::from("inserted")
 }

@@ -1,10 +1,10 @@
 use std::fs::{self};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
-#[derive(Debug)]
+#[derive(Debug, uniffi::Record)]
 pub struct FileEntry {
-    pub path: PathBuf,
-    pub parent_path: PathBuf,
+    pub path: String,
+    pub parent_path: String,
     pub is_directory: bool,
 }
 
@@ -14,8 +14,8 @@ pub fn walk_dir(dir: &str, parent_path: &str) -> Result<Vec<FileEntry>, String> 
     let mut file_entries = Vec::new();
 
     file_entries.push(FileEntry {
-        path: dir.to_path_buf(),
-        parent_path: parent_path.to_path_buf(),
+        path: String::from(dir.to_string_lossy()),
+        parent_path: String::from(parent_path.to_string_lossy()),
         is_directory: true,
     });
 
@@ -28,8 +28,8 @@ pub fn walk_dir(dir: &str, parent_path: &str) -> Result<Vec<FileEntry>, String> 
         if path.is_file() {
             // 将文件信息和父目录信息添加到列表中
             file_entries.push(FileEntry {
-                path: path.clone(),
-                parent_path: parent_path.to_path_buf(),
+                path: String::from(path.to_string_lossy()),
+                parent_path: String::from(parent_path.to_string_lossy()),
                 is_directory: false,
             });
         } else if path.is_dir() {
