@@ -1,3 +1,4 @@
+#!/bin/bash
 
 pushd shared_lib
   targets=("ios" "ios-sim" "darwin")

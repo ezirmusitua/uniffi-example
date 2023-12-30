@@ -2,7 +2,7 @@ bindings:
 	bash ./scripts/generate-bindings.sh
 
 clean:
-	rm -rf shared_lib/bindings && rm -rf shared_lib/target
+	cd shared_lib && rm -rf out && cargo clean
 
 framework:
 	bash ./scripts/build-framework.sh

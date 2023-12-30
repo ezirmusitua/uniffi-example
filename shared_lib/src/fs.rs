@@ -1,6 +1,10 @@
 use std::fs::{self};
 use std::path::Path;
 
+/// FileEntry 文件基本信息
+/// 
+/// # Notes
+/// * 使用过程宏声明 FileEntry 这个结构体将被导出到绑定文件中
 #[derive(Debug, uniffi::Record)]
 pub struct FileEntry {
     pub path: String,
@@ -8,6 +12,16 @@ pub struct FileEntry {
     pub is_directory: bool,
 }
 
+/// 使用递归遍历文件夹
+///
+/// # Arguments
+/// 
+/// * dir - 文件夹路径
+/// * parent_path - 父目录路径
+/// 
+/// # Returns
+/// 
+/// * Vec<FileEntry> - 文件列表
 pub fn walk_dir(dir: &str, parent_path: &str) -> Result<Vec<FileEntry>, String> {
     let dir = Path::new(dir);
     let parent_path = Path::new(parent_path);
